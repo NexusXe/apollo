@@ -5,14 +5,14 @@ extern crate alloc;
 use alloc::string::String;
 use rand::distributions::uniform::Uniform;
 use rand::prelude::Distribution;
-use rand::{Rng, SeedableRng};
+use rand::SeedableRng;
 use rand::rngs::SmallRng;
 
 use crate::parameters::OLC_CODE_LENGTH;
 
 // Sensor-related functions (to be replaced with actual sensor code)
 
-pub fn get_location() -> ([u8; OLC_CODE_LENGTH - 1], [u8; 4], [u8; 4]) {
+pub fn get_location() -> ([u8; OLC_CODE_LENGTH], [u8; 4], [u8; 4]) {
 
     
     // Returns a tuple containing the Open Location Code, latitude, and longitude
@@ -35,7 +35,7 @@ pub fn get_location() -> ([u8; OLC_CODE_LENGTH - 1], [u8; 4], [u8; 4]) {
     let mut olc_code: String = open_location_code::encode(point, OLC_CODE_LENGTH);
 
     let olc_code_str: &str = olc_code.as_mut_str();
-    let mut olc_code_bytes: [u8; OLC_CODE_LENGTH - 1] = [0; OLC_CODE_LENGTH - 1];
+    let mut olc_code_bytes: [u8; OLC_CODE_LENGTH] = [0; OLC_CODE_LENGTH];
     olc_code_bytes.copy_from_slice(olc_code_str.as_bytes());
     let latitude_bytes = latitude.to_be_bytes();
     let longitude_bytes = longitude.to_be_bytes();
