@@ -1,6 +1,5 @@
-
-
-// #![no_main]
+#![no_std]
+#![no_main]
 
 use libc_print::std_name::println;
 

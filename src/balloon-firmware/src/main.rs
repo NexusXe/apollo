@@ -1,5 +1,10 @@
+#![allow(non_upper_case_globals)]
+#![allow(dead_code)]
+
 #![no_std]
 #![no_main]
+
+extern crate alloc;
 
 use panic_halt as _;
 

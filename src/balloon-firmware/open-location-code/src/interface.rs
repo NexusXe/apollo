@@ -1,3 +1,5 @@
+extern crate array_append;
+use array_append::push;
 use geo::Point;
 use std::cmp;
 
@@ -15,73 +17,12 @@ use private::{
 };
 
 /// Determines if a code is a valid Open Location Code.
-pub fn is_valid(code: &str) -> bool {
-    let mut code: String = code.to_string();
-    if code.len() < 3 {
-        // A code must have at-least a separator character + 1 lat/lng pair
-        return false;
-    }
-
-    // Validate separator character
-    if code.find(SEPARATOR).is_none() {
-        // The code MUST contain a separator character
-        return false;
-    }
-    if code.find(SEPARATOR) != code.rfind(SEPARATOR) {
-        // .. And only one separator character
-        return false;
-    }
-    let spos = code.find(SEPARATOR).unwrap();
-    if spos % 2 == 1 || spos > SEPARATOR_POSITION {
-        // The separator must be in a valid location
-        return false;
-    }
-    if code.len() - spos - 1 == 1 {
-        // There must be > 1 character after the separator
-        return false;
-    }
-
-    // Validate padding
-    let padstart = code.find(PADDING_CHAR);
-    if let Some(ppos) = padstart {
-        if spos < SEPARATOR_POSITION {
-            // Short codes cannot have padding
-            return false;
-        }
-        if ppos == 0 || ppos % 2 == 1 {
-            // Padding must be "within" the string, starting at an even position
-            return false;
-        }
-        if code.len() > spos + 1 {
-            // If there is padding, the code must end with the separator char
-            return false;
-        }
-        let eppos = code.rfind(PADDING_CHAR).unwrap();
-        if eppos - ppos % 2 == 1 {
-            // Must have even number of padding chars
-            return false;
-        }
-        // Extract the padding from the code (mutates code)
-        let padding: String = code.drain(ppos..eppos + 1).collect();
-        if padding.chars().any(|c| c != PADDING_CHAR) {
-            // Padding must be one, contiguous block of padding chars
-            return false;
-        }
-    }
-
-    // Validate all characters are permissible
-    code.chars()
-        .map(|c| c.to_ascii_uppercase())
-        .all(|c| c == SEPARATOR || CODE_ALPHABET.contains(&c))
-}
 
 /// Determines if a code is a valid short code.
 ///
 /// A short Open Location Code is a sequence created by removing four or more
 /// digits from an Open Location Code. It must include a separator character.
-pub fn is_short(code: &str) -> bool {
-    is_valid(code) && code.find(SEPARATOR).unwrap() < SEPARATOR_POSITION
-}
+
 
 /// Determines if a code is a valid full Open Location Code.
 ///
@@ -102,7 +43,7 @@ pub fn is_full(code: &str) -> bool {
 /// 10 characters, returning a code of approximately 13.5x13.5 meters. Longer
 /// codes represent smaller areas, but lengths > 14 are sub-centimetre and so
 /// 11 or 12 are probably the limit of useful codes.
-pub fn encode(pt: Point<f64>, code_length: usize) -> String {
+pub fn encode(pt: Point<f64>, code_length: usize) -> [char; 16] {
     let mut lat = clip_latitude(pt.y());
     let lng = normalize_longitude(pt.x());
 
@@ -125,7 +66,7 @@ pub fn encode(pt: Point<f64>, code_length: usize) -> String {
     // it to the requested length.
 
     // Build up the code digits in reverse order.
-    let mut rev_code = String::with_capacity(trimmed_code_length + 1);
+    let mut rev_code = [char; (trimmed_code_length + 1)];
 
     // First do the grid digits.
     if code_length > PAIR_CODE_LENGTH {
@@ -153,7 +94,7 @@ pub fn encode(pt: Point<f64>, code_length: usize) -> String {
             rev_code.push(SEPARATOR);
         }
     }
-    let mut code: String;
+    let mut code: [char; 20];
     // If we need to pad the code, replace some of the digits.
     if code_length < SEPARATOR_POSITION {
         code = rev_code.chars().rev().take(code_length).collect();

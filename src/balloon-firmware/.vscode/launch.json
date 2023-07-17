@@ -7,34 +7,35 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'balloon-firmware'",
+            "name": "Debug executable 'balloon_telemetry'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=balloon-firmware",
-                    "--package=balloon-firmware"
+                    "--bin=balloon_telemetry",
+                    "--package=balloon_telemetry"
                 ],
                 "filter": {
-                    "name": "balloon-firmware",
+                    "name": "balloon_telemetry",
                     "kind": "bin"
                 }
             },
             "args": [],
-            "cwd": "${workspaceFolder}"
+            "cwd": "${workspaceFolder}",
+            "env": { "RUST_BACKTRACE": "1" }
         },
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'balloon-firmware'",
+            "name": "Debug unit tests in executable 'balloon_telemetry'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=balloon-firmware",
-                    "--package=balloon-firmware"
+                    "--bin=balloon_telemetry",
+                    "--package=balloon_telemetry"
                 ],
                 "filter": {
-                    "name": "balloon-firmware",
+                    "name": "balloon_telemetry",
                     "kind": "bin"
                 }
             },
