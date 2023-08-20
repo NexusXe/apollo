@@ -2,6 +2,7 @@ Apollo is a free and open-source, homebrew, homebuilt, and highly adaptable amat
 
 All code, project files, schematics, as well as files used for this website can be found at [github.com/nexusxe/apollo](https://github.com/NexusXe/apollo)
 
+**NOTE: This repository is obsolete. New code is being pushed to [nexusxe/linapollo](https://github.com/NexusXe/libapollo)**
 ---
 
 ## Packet overview
